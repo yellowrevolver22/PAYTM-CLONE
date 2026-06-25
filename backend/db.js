@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { string } = require('zod');
 
 mongoose.connect("mongodb://localhost:27017");
 
@@ -31,8 +32,22 @@ const userSchema = mongoose.Schema({
   }
 })
 
+const accountSchema = mongoose.Schema({
+  userId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User', //like a foriegn key, used to reference to another document to populate
+    required:true
+  },
+  balance:{
+    type:Number,
+    required:true
+  }
+})
+
 const User = mongoose.model("User",userSchema);
+const Account = mongoose.model("Account",accountSchema);
 
 module.exports={
-  User
+  User,
+  Account
 }
