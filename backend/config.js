@@ -1,5 +1,5 @@
-JWT_SECRET = '18dm4yn9ctru9fhn1v38ref5y1hrbty';
+const JWT_SECRET = '18dm4yn9ctru9fhn1v38ref5y1hrbty';
 
-module.export = {
+module.exports = {
   JWT_SECRET
 }

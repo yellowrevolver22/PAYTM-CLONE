@@ -1,8 +1,8 @@
 const express = require('express');
-const app = express();
 const zod = require('zod');
-const User = require('../db.js')
+const jwt = require('jsonwebtoken')
 const JWT_SECRET = require('../config.js')
+const { Account,User } = require('../db.js')
 const authMiddleware = require('../middleware.js');
 
 const signupSchema = zod.object({
@@ -23,9 +23,9 @@ const updateSchema = zod.object({
   password:zod.string().optional()
 })
 
-const UserRouter = express.Router();
+const Router = express.Router();
 
-app.put('/',authMiddleware,async(req,res)=>{
+Router.put('/',authMiddleware,async(req,res)=>{
   const {success} = updateSchema.safeParse(req.body);
 
   if(!success){
@@ -41,7 +41,7 @@ app.put('/',authMiddleware,async(req,res)=>{
   })
 })
 
-app.post('/signup',async(req,res)=>{
+Router.post('/signup',async(req,res)=>{
 
   const body = req.body; //check for request body format
   const {success} = signupSchema.safeParse(body);
@@ -85,8 +85,8 @@ app.post('/signup',async(req,res)=>{
 
 })
 
-app.post('/signin',async(req,res)=>{
-  const success = signinSchema.safeParse(req.body);
+Router.post('/signin',async(req,res)=>{
+  const {success} = signinSchema.safeParse(req.body);
   if(!success){
     return res.status(411).json({
       message:"error while logging"
@@ -114,7 +114,7 @@ app.post('/signin',async(req,res)=>{
   })
 })
 
-app.get('/bulk',async(req,res)=>{
+Router.get('/bulk',async(req,res)=>{
   const filterName = req.query.filter||"";
 
   const users = await User.find({
@@ -139,6 +139,4 @@ app.get('/bulk',async(req,res)=>{
   })
 })
 
-module.export = {
-  UserRouter
-}
+module.exports = Router
