@@ -8,8 +8,8 @@ const authMiddleware = require('../middleware.js');
 const signupSchema = zod.object({
   username:zod.string(),
   password:zod.string(),
-  firstname:zod.string(),
-  lastname:zod.string()
+  firstName:zod.string(),
+  lastName:zod.string()
 })
 
 const signinSchema = zod.object({
@@ -42,7 +42,6 @@ Router.put('/',authMiddleware,async(req,res)=>{
 })
 
 Router.post('/signup',async(req,res)=>{
-
   const body = req.body; //check for request body format
   const {success} = signupSchema.safeParse(body);
   if(!success){
@@ -62,9 +61,9 @@ Router.post('/signup',async(req,res)=>{
 
   const user = await User.create({
     username:req.body.username,
-    firstname:req.body.firstname,
-    lastname:req.body.lastname,
-    password:req.body.password
+    password:req.body.password,
+    firstName:req.body.firstName,
+    lastName:req.body.lastName
   })
 
   const userId = user._id; //mongoDB creates its own id . and we are extracting that id
@@ -86,7 +85,10 @@ Router.post('/signup',async(req,res)=>{
 })
 
 Router.post('/signin',async(req,res)=>{
+  console.log(req.body);
   const {success} = signinSchema.safeParse(req.body);
+  console.log(success);
+
   if(!success){
     return res.status(411).json({
       message:"error while logging"
@@ -131,9 +133,9 @@ Router.get('/bulk',async(req,res)=>{
 
   res.json({
     user:users.map(user=>({
-      username:user.userName,
-      firstname:user.firstName,
-      lastname:user.lastName,
+      username:user.username,
+      firstName:user.firstName,
+      lastName:user.lastName,
       _id:user._id
     }))
   })
